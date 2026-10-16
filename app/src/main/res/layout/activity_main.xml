@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:padding="24dp">
+<LinearLayout android:background="#121212" android:gravity="center_horizontal" android:layoutDirection="rtl" android:layout_height="match_parent" android:layout_width="match_parent" android:orientation="vertical" android:padding="24dp" xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="Dubdu Android\nProject scaffold is ready"
-        android:textSize="20sp" />
+    <TextView android:layout_height="wrap_content" android:layout_marginBottom="20dp" android:layout_width="wrap_content" android:text="Dubdu - دوبله زنده فارسی" android:textColor="#FFFFFF" android:textSize="22sp" android:textStyle="bold"/>
+
+    <EditText android:backgroundTint="#4CAF50" android:hint="کلید API (Gemini / OpenAI) را وارد کنید" android:id="@+id/etApiKey" android:inputType="textPassword" android:layout_height="wrap_content" android:layout_marginBottom="16dp" android:layout_width="match_parent" android:textColor="#FFFFFF" android:textColorHint="#888888"/>
+
+    <Spinner android:backgroundTint="#FFFFFF" android:id="@+id/spProvider" android:layout_height="48dp" android:layout_marginBottom="16dp" android:layout_width="match_parent"/>
+
+    <Switch android:id="@+id/swUseMicFallback" android:layout_height="wrap_content" android:layout_marginBottom="16dp" android:layout_width="match_parent" android:text="حالت میکروفون (مخصوص یوتیوب و اپ‌های قفل‌شده)" android:textColor="#E0E0E0"/>
+
+    <Switch android:checked="true" android:id="@+id/swDuckAudio" android:layout_height="wrap_content" android:layout_marginBottom="24dp" android:layout_width="match_parent" android:text="کاهش خودکار صدای ویدئوی اصلی هنگام پخش دوبله" android:textColor="#E0E0E0"/>
+
+    <Button android:backgroundTint="#2E7D32" android:id="@+id/btnToggleDub" android:layout_height="64dp" android:layout_width="match_parent" android:text="شروع دوبله زنده فارسی" android:textColor="#FFFFFF" android:textSize="18sp"/>
+
+    <TextView android:gravity="center" android:id="@+id/tvStatus" android:layout_height="wrap_content" android:layout_marginTop="20dp" android:layout_width="match_parent" android:text="وضعیت: آماده به کار" android:textColor="#B0BEC5" android:textSize="14sp"/>
 
 </LinearLayout>
