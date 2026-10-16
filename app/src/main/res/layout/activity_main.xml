@@ -1,18 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:background="#121212" android:gravity="center_horizontal" android:layoutDirection="rtl" android:layout_height="match_parent" android:layout_width="match_parent" android:orientation="vertical" android:padding="24dp" xmlns:android="http://schemas.android.com/apk/res/android">
+<LinearLayout android:background="#121212" android:gravity="center_horizontal" android:layoutDirection="rtl" android:layout_height="match_parent" android:layout_width="match_parent" android:orientation="vertical" android:padding="20dp" xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <TextView android:layout_height="wrap_content" android:layout_marginBottom="20dp" android:layout_width="wrap_content" android:text="Dubdu - دوبله زنده فارسی" android:textColor="#FFFFFF" android:textSize="22sp" android:textStyle="bold"/>
+    <TextView android:layout_height="wrap_content" android:layout_marginBottom="16dp" android:layout_width="wrap_content" android:text="Dubdu - دوبله زنده فارسی" android:textColor="#FFFFFF" android:textSize="20sp" android:textStyle="bold"/>
 
-    <EditText android:backgroundTint="#4CAF50" android:hint="کلید API (Gemini / OpenAI) را وارد کنید" android:id="@+id/etApiKey" android:inputType="textPassword" android:layout_height="wrap_content" android:layout_marginBottom="16dp" android:layout_width="match_parent" android:textColor="#FFFFFF" android:textColorHint="#888888"/>
+    <EditText android:backgroundTint="#4CAF50" android:hint="کلید API (Gemini یا OpenAI)" android:id="@+id/etApiKey" android:inputType="textVisiblePassword" android:layout_height="wrap_content" android:layout_marginBottom="12dp" android:layout_width="match_parent" android:textColor="#FFFFFF" android:textColorHint="#888888"/>
 
-    <Spinner android:backgroundTint="#FFFFFF" android:id="@+id/spProvider" android:layout_height="48dp" android:layout_marginBottom="16dp" android:layout_width="match_parent"/>
+    <Spinner android:background="#262626" android:id="@+id/spProvider" android:layout_height="48dp" android:layout_marginBottom="12dp" android:layout_width="match_parent"/>
 
-    <Switch android:id="@+id/swUseMicFallback" android:layout_height="wrap_content" android:layout_marginBottom="16dp" android:layout_width="match_parent" android:text="حالت میکروفون (مخصوص یوتیوب و اپ‌های قفل‌شده)" android:textColor="#E0E0E0"/>
+    <Switch android:id="@+id/swUseMicFallback" android:layout_height="wrap_content" android:layout_marginBottom="10dp" android:layout_width="match_parent" android:text="ضبط از میکروفون (اگر صدای داخلی اپ قفل بود)" android:textColor="#E0E0E0"/>
 
-    <Switch android:checked="true" android:id="@+id/swDuckAudio" android:layout_height="wrap_content" android:layout_marginBottom="24dp" android:layout_width="match_parent" android:text="کاهش خودکار صدای ویدئوی اصلی هنگام پخش دوبله" android:textColor="#E0E0E0"/>
+    <Switch android:checked="true" android:id="@+id/swDuckAudio" android:layout_height="wrap_content" android:layout_marginBottom="16dp" android:layout_width="match_parent" android:text="کم کردن صدای اصلی هنگام پخش دوبله" android:textColor="#E0E0E0"/>
 
-    <Button android:backgroundTint="#2E7D32" android:id="@+id/btnToggleDub" android:layout_height="64dp" android:layout_width="match_parent" android:text="شروع دوبله زنده فارسی" android:textColor="#FFFFFF" android:textSize="18sp"/>
+    <Button android:backgroundTint="#2E7D32" android:id="@+id/btnToggleDub" android:layout_height="58dp" android:layout_width="match_parent" android:text="شروع دوبله زنده فارسی" android:textColor="#FFFFFF" android:textSize="17sp"/>
 
-    <TextView android:gravity="center" android:id="@+id/tvStatus" android:layout_height="wrap_content" android:layout_marginTop="20dp" android:layout_width="match_parent" android:text="وضعیت: آماده به کار" android:textColor="#B0BEC5" android:textSize="14sp"/>
+    <TextView android:layout_height="wrap_content" android:layout_marginTop="16dp" android:layout_width="match_parent" android:text="گزارش زنده عملکرد (Live Log):" android:textColor="#4CAF50" android:textStyle="bold"/>
+
+    <ScrollView android:background="#1E1E1E" android:layout_height="0dp" android:layout_marginTop="8dp" android:layout_weight="1" android:layout_width="match_parent" android:padding="12dp">
+
+        <TextView android:id="@+id/tvStatus" android:layout_height="wrap_content" android:layout_width="match_parent" android:text="آماده به کار..." android:textColor="#E0E0E0" android:textSize="13sp"/>
+    </ScrollView>
 
 </LinearLayout>
