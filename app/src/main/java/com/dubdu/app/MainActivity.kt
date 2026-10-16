@@ -2,9 +2,7 @@ package com.dubdu.app
 
 import android.Manifest
 import android.app.Activity
-import android.content.Context
-import android.content.Intent
-import android.content.pm.PackageManager
+import android.content.*
 import android.media.projection.MediaProjectionManager
 import android.os.Build
 import android.os.Bundle
@@ -23,13 +21,22 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnToggleDub: Button
     private lateinit var tvStatus: TextView
 
+    private val logReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val msg = intent?.getStringExtra("LOG_MSG") ?: return
+            tvStatus.text = "$msg\n-----------------\n${tvStatus.text}".take(3000)
+        }
+    }
+
     private val projectionLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK && result.data != null) {
-            startDubbingService(result.resultCode, result.data)
+            DubbingService.projectionData = result.data
+            DubbingService.projectionResultCode = result.resultCode
+            startDubbingService()
         } else {
-            Toast.makeText(this, "مجوز ضبط صدای صفحه داده نشد", Toast.LENGTH_SHORT).show()
+            appendLog("❌ مجوز ضبط صفحه/صدا رد شد.")
         }
     }
 
@@ -44,7 +51,10 @@ class MainActivity : AppCompatActivity() {
         btnToggleDub = findViewById(R.id.btnToggleDub)
         tvStatus = findViewById(R.id.tvStatus)
 
-        val providers = arrayOf("Gemini 2.0 Flash (توصیه شده - سریع)", "OpenAI (Whisper + GPT)")
+        val providers = arrayOf(
+            "Gemini 2.5 / 2.0 Flash (پیشنهادی)",
+            "OpenAI (Whisper + GPT-4o-mini)"
+        )
         spProvider.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, providers)
 
         val prefs = getSharedPreferences("dubdu_prefs", Context.MODE_PRIVATE)
@@ -60,7 +70,7 @@ class MainActivity : AppCompatActivity() {
             } else {
                 val apiKey = etApiKey.text.toString().trim()
                 if (apiKey.isEmpty()) {
-                    Toast.makeText(this, "لطفاً کلید API را وارد کنید", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "کلید API را وارد کنید", Toast.LENGTH_SHORT).show()
                     return@setOnClickListener
                 }
                 prefs.edit()
@@ -69,10 +79,8 @@ class MainActivity : AppCompatActivity() {
                     .apply()
 
                 if (swUseMicFallback.isChecked) {
-                    // شروع مستقیم با میکروفون (بدون نیاز به MediaProjection)
-                    startDubbingService(0, null)
+                    startDubbingService()
                 } else {
-                    // درخواست مجوز ضبط صدای داخلی اندروید ۱۰+
                     val mpm = getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
                     projectionLauncher.launch(mpm.createScreenCaptureIntent())
                 }
@@ -80,10 +88,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun startDubbingService(resultCode:Int, data: Intent?) {
+    private fun startDubbingService() {
         val intent = Intent(this, DubbingService::class.java).apply {
-            putExtra("RESULT_CODE", resultCode)
-            putExtra("DATA", data)
             putExtra("API_KEY", etApiKey.text.toString().trim())
             putExtra("PROVIDER", spProvider.selectedItemPosition)
             putExtra("USE_MIC", swUseMicFallback.isChecked)
@@ -97,12 +103,32 @@ class MainActivity : AppCompatActivity() {
         if (running) {
             btnToggleDub.text = "توقف دوبله زنده"
             btnToggleDub.setBackgroundColor(0xFFC62828.toInt())
-            tvStatus.text = "وضعیت: در حال دریافت صدا و دوبله به فارسی...\nاکنون وارد اینستاگرام، تیک‌تاک یا یوتیوب شوید."
+            appendLog("▶️ سرویس شروع شد. اکنون ویدئو را پخش کنید...")
         } else {
             btnToggleDub.text = "شروع دوبله زنده فارسی"
             btnToggleDub.setBackgroundColor(0xFF2E7D32.toInt())
-            tvStatus.text = "وضعیت: متوقف شد"
+            appendLog("⏹️ سرویس متوقف شد.")
         }
+    }
+
+    private fun appendLog(msg: String) {
+        tvStatus.text = "$msg\n${tvStatus.text}"
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val filter = IntentFilter("DUBDU_LOG_EVENT")
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(logReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
+        } else {
+            registerReceiver(logReceiver, filter)
+        }
+        updateUiState(DubbingService.isRunning)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        unregisterReceiver(logReceiver)
     }
 
     private fun requestPermissionsIfNeeded() {
