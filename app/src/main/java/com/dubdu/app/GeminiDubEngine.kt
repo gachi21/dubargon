@@ -32,8 +32,8 @@ object GeminiDubEngine {
 
     private fun callGeminiAudioToPersian(wavBytes: ByteArray, apiKey: String): String {
         val base64Audio = Base64.encodeToString(wavBytes, Base64.NO_WRAP)
-        // استفاده از مدل پایدار gemini-2.0-flash برای پردازش مستقیم صوت
-        val url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=$apiKey"
+        // Gemini 2.0 Flash was shut down; Gemini 3.6 Flash supports audio input and text output.
+        val url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=$apiKey"
 
         val prompt = """
             Listen to this audio clip. If someone is speaking, translate what they say into short, natural conversational Persian (Farsi) for live dubbing.
@@ -60,7 +60,7 @@ object GeminiDubEngine {
         client.newCall(request).execute().use { response ->
             val bodyStr = response.body?.string() ?: ""
             if (!response.isSuccessful) {
-                return "ERROR: کد ${response.code} - ${bodyStr.take(120)}"
+                return "ERROR: کد ${response.code} - ${bodyStr.take(300)}"
             }
             val json = JSONObject(bodyStr)
             val text = json.optJSONArray("candidates")
